@@ -3,11 +3,11 @@ let mysql = require("mysql");
 
 let pool = mysql.createPool({
       connectionLimit : 100,
-      host     : 'xxx.34.34.33',
+      host     : '45.40.164.65',
       port     :  3306,
-      user     : 'root',
-      password : 'Passw0rd',
-      database : 'XXX',
+      user     : 'familytreet2',
+      password : 'Welcome123!@#',
+      database : 'familytreet2',
   });
 
 

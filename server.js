@@ -6,16 +6,22 @@ var bodyParser = require('body-parser');
 var expressJwt = require('express-jwt');
 var config = require('config.json');
 let jwt = require('jwt-simple');
+var path = require('path');
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
+
 // routes
 app.get('/',function(req,res){
-    res.header('X-XSS-Protection' , 0 );
-    res.send('FamilyTree API');
+  res.render('index', { title: 'Family Tree' });
 });   
+
+ 
 app.use('/users', require('./controllers/users.controller'));
 
 // start server
