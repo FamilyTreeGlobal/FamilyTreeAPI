@@ -1,4 +1,4 @@
-﻿var config = require('config.json');
+﻿var config = require('../config/config.json');
 var _ = require('lodash');
 let jwt = require('jwt-simple');
 var bcrypt = require('bcryptjs');
@@ -29,19 +29,22 @@ function authenticate(username, password) {
             deferred.resolve('Could not connect to database');
         if(conn)
             {
-                conn.query('select profileId,email,fullname from tbl_memebers where email=? OR phone=? AND status =? ', [username, username,1], function (err, rows) {
+                conn.query('select ft_profileId,email,fullname,password from tbl_members where email=?  AND status =? ', [username,1], function (err, rows) {
                     if (err) 
-                        deferred.reject(err.name + ': ' + err.message);
-                    if (rows.length > 0) {
+                        deferred.reject(err.name + ': ' + err.message);                    
+                    if (rows) {
                          conn.release();
-                        let user = rows[0];                        
-                        if (passwordHash.verify(password, user.password)) {
+                        let user = rows[0];  
+                        //console.log(user);
+                        if(bcrypt.compareSync(password, user.password)) {                        
+                       // if (passwordHash.verify(password, user.password)) {
                             let payload = {
                             issuerTag: config.authenticationIssuerTag,
                             communicationId:user.ft_profileId,
                             exp: Math.floor(new Date().getTime() + 60 * 60 * 24 * 1000)
                             };
-                            let jwt_token = jwt.encode(payload, config.jwt.secret);
+                            let jwt_token = jwt.encode(payload, config.secret);
+                            console.log('inside1')
                             deferred.resolve({                                
                                 username: user.fullname,
                                 token: jwt_token
@@ -49,7 +52,7 @@ function authenticate(username, password) {
                         } else {
                             deferred.resolve();
                         }
-                    }
+                    }else{deferred.resolve();}
                 });
                 return deferred.promise;
           }

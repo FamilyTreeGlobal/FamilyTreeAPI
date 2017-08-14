@@ -15,10 +15,10 @@ module.exports = router;
 
 function authenticate(req, res) {
     console.log('test:'+req.body.username);
-    userService.authenticate(req.body.username, req.body.password)
-        .then(function (user) {
+    userService.authenticate(req.body.username, req.body.password).then(function (user) {
             if (user) {
                 // authentication successful
+                console.log('inside')
                 res.send(user);
             } else {
                 // authentication failed
