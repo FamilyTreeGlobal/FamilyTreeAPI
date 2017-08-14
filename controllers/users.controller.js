@@ -7,37 +7,48 @@ var userService = require('services/user.service');
 router.post('/authenticate', authenticate);
 router.post('/register', register);
 router.get('/getUsersList', getUsersList);
-router.get('/current', getCurrent);
-router.put('/:_id', update);
-router.delete('/:_id', _delete);
 
 module.exports = router;
 
 function authenticate(req, res) {
-    console.log('test:'+req.body.username);
-    userService.authenticate(req.body.username, req.body.password).then(function (user) {
-            if (user) {
+    
+    userService.authenticate(req.body.username, req.body.password,function(err,user) {
+      //res.send(result);
+      console.log('test:'+user);
+       if (user) {
                 // authentication successful
                 console.log('inside')
                 res.send(user);
             } else {
                 // authentication failed
-                res.status(400).send('Username or password is incorrect');
+                //res.send('Username or password is incorrect');
+                 return res.send(JSON.stringify({ status: 401, msg: 'Username or password is incorrect' }));
             }
-        })
-        .catch(function (err) {
-            res.status(400).send(err);
-        });
+    });
 }
 
 function register(req, res) {
-    userService.create(req.body)
-        .then(function () {
-            res.sendStatus(200);
-        })
-        .catch(function (err) {
-            res.status(400).send(err);
-        });
+    userService.create(req.body,function(err,result) {
+      //res.send(result);
+           if (result) {
+                //authentication successful
+              // console.log('back to controller:'+user);
+               if(result==1){
+                    res.send(JSON.stringify({ status: 200, msg: 'email is not available.',result:result }));}
+               else if(result==2){
+                   res.send(JSON.stringify({ status: 200, msg: 'User created succesfully.',result:result }));
+               }else{
+                   res.send(JSON.stringify({ status: 200, msg: 'User created succesfully.',result:result }));
+               }
+                
+                
+              // res.send(result);
+            } else {
+                // authentication failed
+                //res.status(400).send('Username or password is incorrect.');
+                return res.send(JSON.stringify({ status: 401, msg: 'Error' }));
+            }
+    });
 }
 
 function getUsersList(req, res) {
@@ -58,38 +69,4 @@ function getUsersList(req, res) {
                 });
             })
         }
-}
-
-function getCurrent(req, res) {
-    userService.getById(req.user.sub)
-        .then(function (user) {
-            if (user) {
-                res.send(user);
-            } else {
-                res.sendStatus(404);
-            }
-        })
-        .catch(function (err) {
-            res.status(400).send(err);
-        });
-}
-
-function update(req, res) {
-    userService.update(req.params._id, req.body)
-        .then(function () {
-            res.sendStatus(200);
-        })
-        .catch(function (err) {
-            res.status(400).send(err);
-        });
-}
-
-function _delete(req, res) {
-    userService.delete(req.params._id)
-        .then(function () {
-            res.sendStatus(200);
-        })
-        .catch(function (err) {
-            res.status(400).send(err);
-        });
 }
