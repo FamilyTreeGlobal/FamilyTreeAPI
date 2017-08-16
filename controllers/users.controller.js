@@ -33,14 +33,7 @@ function register(req, res) {
            if (result) {
                 //authentication successful
               // console.log('back to controller:'+user);
-               if(result==1){
-                    res.send(JSON.stringify({ status: 200, msg: 'email is not available.',result:result }));}
-               else if(result==2){
-                   res.send(JSON.stringify({ status: 200, msg: 'User created succesfully.',result:result }));
-               }else{
-                   res.send(JSON.stringify({ status: 200, msg: 'User created succesfully.',result:result }));
-               }
-                
+                res.send(JSON.stringify({ status: 200, msg: '',result:result }));
                 
               // res.send(result);
             } else {
