@@ -11,18 +11,17 @@ router.get('/getUsersList', getUsersList);
 module.exports = router;
 
 function authenticate(req, res) {
-    
+    console.log(req.body);
     userService.authenticate(req.body.username, req.body.password,function(err,user) {
       //res.send(result);
-      console.log('test:'+user);
-       if (user) {
+     // console.log('test:'+user);
+        if (user!=null) {
                 // authentication successful
-                console.log('inside')
+                
                 res.send(user);
             } else {
-                // authentication failed
-                //res.send('Username or password is incorrect');
-                 return res.send(JSON.stringify({ status: 401, msg: 'Username or password is incorrect' }));
+                // authentication failed                
+                 return res.send(JSON.stringify({ status: 401, msg: 'The email/password didn\'t match with our records.' }));
             }
     });
 }

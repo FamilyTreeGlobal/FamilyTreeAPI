@@ -28,10 +28,9 @@ function authenticate(username, password,callback) {
                 conn.query('select ft_profileId,email,fullname,password from tbl_members where email=?  AND status =? ', [username,1], function (err, rows) {
                     if (err)  
                            callback(err.name + ': ' + err.message, null);                
-                    if (rows) {
+                    if (rows.length > 0) {
                          conn.release();
-                        let user = rows[0];  
-                        //console.log(user);
+                        let user = rows[0];                          
                         if(bcrypt.compareSync(password, user.password)) {                        
                        
                             let payload = {
@@ -44,9 +43,9 @@ function authenticate(username, password,callback) {
                             let result = JSON.stringify({ status: 200, username: user.fullname,token: jwt_token });
                             callback(null, result);                            
                         } else {
-                            callback('Invalid User', null);
+                            callback('Invalid Password', null);
                         }
-                    }else{callback('Invalid Password', null);}
+                    }else{callback('Invalid User', null);}
                 });
                 
           }
