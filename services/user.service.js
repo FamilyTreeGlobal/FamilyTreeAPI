@@ -86,3 +86,26 @@ function create(user,callback) {
        
     });
 }
+
+function getUserByID(emailid,callback){
+    let db_connect = new db();
+    db_connect.getConnection(function(err , conn){
+          if (err)
+            callback('Could not connect to database',null);
+          if(conn)
+            {
+                console.log('getting the user details by id ..');
+                let sqlquery = 'select fullname ,surname , gender ,dob ,maritalstatus ,phone from tbl_members where email = ?';
+                conn.query(sqlquery ,[emailid],function(err,result){
+                    conn.release();
+                    if(err)
+                        throw err ;
+                    if(result)
+                        {
+                            var data =JSON.stringify(result[0]);
+                            callback(null , data.response);
+                        }
+                });
+            }
+    });
+}

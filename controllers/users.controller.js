@@ -62,3 +62,24 @@ function getUsersList(req, res) {
             })
         }
 }
+
+// getting the user profile details based on emailid
+function getUserByID(req , res){
+        if(req.get('authentication') != null)
+            {
+                return new Promise((resolve , reject) => {
+                    let auth = new Auth();
+                    auth.validateToken(jwtToken , function(err , result){
+                        if(err)
+                            reject(err);
+                        userService.getUserByID()
+                          .then(function(user){
+                              res.send(user);
+                          })
+                            .catch(function(err){
+                                res.status(400).send(err);
+                            });
+                    });
+                })
+            }
+    }
