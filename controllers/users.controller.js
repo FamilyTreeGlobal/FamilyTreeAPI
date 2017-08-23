@@ -83,3 +83,14 @@ function getUserByID(req , res){
                 })
             }
     }
+
+    function updateUser(req, res) {
+    userService.updateUser(req.body,function(err,result) {
+      
+           if (result) {
+                res.send(JSON.stringify({ status: 200, msg: '',result:result }));
+            } else {
+                return res.send(JSON.stringify({ status: 401, msg: 'Error' }));
+            }
+    });
+}

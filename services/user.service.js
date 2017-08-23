@@ -109,3 +109,33 @@ function getUserByID(emailid,callback){
             }
     });
 }
+
+
+function updateUser(user,callback) {
+    var deferred = Q.defer();
+    let profileId=uuidv1();
+    let db_connect = new db();
+   
+    db_connect.getConnection(function (err, conn) {
+        if (err)
+            callback('Could not connect to database',null);
+        if(conn)
+            {
+               
+                let strQuery='UPDATE tbl_members set  fullname = , surname = , gender = , dob = ,maritalstatus = , phone = ;(?,?,?,?,?,?)';
+                conn.query(strQuery,[user.fullname, user.surname, user.gender,user.dob, user.maritalstatus,user.phone], function(err, result) { 
+                    conn.release();
+                     if (err) throw err; 
+                     if(result)
+                        {
+                            var currentData=JSON.parse(JSON.stringify(result[0]))[0];
+                            console.log(currentData.response);
+                            callback(null,currentData.response);                            
+                        }
+                        
+                    
+                });
+          }
+       
+    });
+}
