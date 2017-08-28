@@ -1,7 +1,9 @@
-﻿var config = require('config.json');
+﻿"use strict";
+var config = require('config.json');
 var express = require('express');
 var router = express.Router();
 var userService = require('services/user.service');
+var Auth=require('../modules/auth');
 
 // routes
 router.post('/authenticate', authenticate);
@@ -45,6 +47,41 @@ function register(req, res) {
     });
 }
 
+// getting the user profile details based on emailid
+function getUserDetailsByProfileId(req , res){
+    
+        if(req.get('authentication') != null)
+            {
+                return new Promise((resolve , reject) => {
+                    let auth = new Auth();
+                    auth.validateToken(req.get('authentication') , function(err , result){
+                        if(err)
+                            reject(err);
+                        console.log(result);
+                        userService.getUserDetailsByProfileId(result.communicationId,function(err,user) {
+                            if (user) {
+                                res.send(JSON.stringify({ status: 200, msg: '',result:user }));                                
+                            } else {
+                                return res.send(JSON.stringify({ status: 401, msg: 'Error' }));
+                            }
+                        });
+                    });
+                })
+            }
+    }
+
+function updateUser(req, res) {
+    userService.updateUser(req.body,function(err,result) {
+      
+           if (result) {
+                res.send(JSON.stringify({ status: 200, msg: '',result:result }));
+            } else {
+                return res.send(JSON.stringify({ status: 401, msg: 'Error' }));
+            }
+    });
+}
+
+
 function getUsersList(req, res) {
     if(req.get('authentication')!=null)
         {
@@ -63,38 +100,4 @@ function getUsersList(req, res) {
                 });
             })
         }
-}
-
-// getting the user profile details based on emailid
-function getUserDetailsByProfileId(req , res){
-    console.log('req:'+ req);
-        if(req.get('authentication') != null)
-            {
-                return new Promise((resolve , reject) => {
-                    let auth = new Auth();
-                    auth.validateToken(jwtToken , function(err , result){
-                        if(err)
-                            reject(err);
-                        console.log(result.communicationId);
-                        userService.getUserDetailsByProfileId(result.communicationId)
-                          .then(function(user){
-                              res.send(user);
-                          })
-                            .catch(function(err){
-                                res.status(400).send(err);
-                            });
-                    });
-                })
-            }
-    }
-
-    function updateUser(req, res) {
-    userService.updateUser(req.body,function(err,result) {
-      
-           if (result) {
-                res.send(JSON.stringify({ status: 200, msg: '',result:result }));
-            } else {
-                return res.send(JSON.stringify({ status: 401, msg: 'Error' }));
-            }
-    });
 }

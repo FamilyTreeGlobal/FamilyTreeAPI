@@ -1,20 +1,18 @@
-﻿var config = require('../config/config.json');
+﻿
+var config = require('../config/config.json');
 var _ = require('lodash');
 let jwt = require('jwt-simple');
 var bcrypt = require('bcryptjs');
 var Q = require('q');
 let db = require("../config/db.js");
+
 const uuidv1 = require('uuid/v1');
 
 var service = {};
 
 service.authenticate = authenticate;
-//service.getUsersList = getUsersList;
-//service.getById = getById;
 service.create = create;
 service.getUserDetailsByProfileId=getUserDetailsByProfileId;
-//service.update = update;
-//service.delete = _delete;
 
 module.exports = service;
 
@@ -39,7 +37,7 @@ function authenticate(username, password,callback) {
                             communicationId:user.ft_profileId,
                             exp: Math.floor(new Date().getTime() + 60 * 60 * 24 * 1000)
                             };
-                            let jwt_token = jwt.encode(payload, config.secret);                            
+                            let jwt_token = jwt.encode(payload, config.jwtSecret);                            
                             let result = JSON.stringify({ status: 200, username: user.fullname,token: jwt_token });
                             callback(null, result);                            
                         } else {
@@ -88,8 +86,7 @@ function create(user,callback) {
 }
 
 function getUserDetailsByProfileId(profileId,callback){
-    let db_connect = new db();
-    console.log('profileid'+profileId);
+    let db_connect = new db();    
     db_connect.getConnection(function(err , conn){
           if (err)
             callback('Could not connect to database',null);
@@ -103,8 +100,8 @@ function getUserDetailsByProfileId(profileId,callback){
                         throw err ;
                     if(result)
                         {
-                            var data =JSON.stringify(result[0]);
-                            callback(null , data.response);
+                            var data =JSON.stringify(result[0]);                            
+                            callback(null , data);
                         }
                 });
             }

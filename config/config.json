@@ -1,3 +1,3 @@
 {
-    "secret": "FamilyTreeGlobal01082017"
+    "jwtSecret": "FamilyTreeGlobal01082017"
 }

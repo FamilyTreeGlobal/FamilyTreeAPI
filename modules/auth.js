@@ -1,29 +1,21 @@
 "use strict";
-let models = require('../../server/models/index');
-let graph = require('fbgraph');
-let bcrypt = require('bcrypt');
+var config = require('../config/config.json');
+//let models = require('../../server/models/index');
+//let bcrypt = require('bcrypt');
 let jwt = require('jwt-simple');
-let config=require('../../server/config.json');
-let user = require('../../modules/user/user');
-let util = require('../../modules/util');
-let Mailer = require('../../modules/notification/mailer');
-let callbackcode = require('../../modules/config/error.json');
-var GoogleAuth = require('google-auth-library');
-let randomstring = require("randomstring");
-let clientId = config.development.googleAuth.clientId;
 
-module.exports = class auth{
+module.exports = class Auth{
 	validateToken(authentication, callback) {
 		if (authentication) {
         //let authentication = req.get('authentication');
         let [bearer, jwtToken] = authentication.split(' ');        
 		//let decoded = jwt.decode(jwtToken,config.secret);    
 		
-			let decoded = jwt.decode(jwtToken, config.development.common.jwtSecret);
+			let decoded = jwt.decode(jwtToken, config.jwtSecret);
 			if (decoded.exp < Date.now()) {
-		    	callback(null,{status:'false',profileId:decoded.communicationId});
+		    	callback(null,{status:'false',communicationId:decoded.communicationId});
 			} else {	
-				callback(null, {status:'true',profileId:decoded.communicationId});
+				callback(null, {status:'true',communicationId:decoded.communicationId});
 			}
 		} 
 	};
