@@ -7,6 +7,8 @@ var userService = require('services/user.service');
 router.post('/authenticate', authenticate);
 router.post('/register', register);
 router.get('/getUsersList', getUsersList);
+router.get('/getUserDetailsByProfileId', getUserDetailsByProfileId);
+
 
 module.exports = router;
 
@@ -64,7 +66,8 @@ function getUsersList(req, res) {
 }
 
 // getting the user profile details based on emailid
-function getUserByID(req , res){
+function getUserDetailsByProfileId(req , res){
+    console.log('req:'+ req);
         if(req.get('authentication') != null)
             {
                 return new Promise((resolve , reject) => {
@@ -72,7 +75,8 @@ function getUserByID(req , res){
                     auth.validateToken(jwtToken , function(err , result){
                         if(err)
                             reject(err);
-                        userService.getUserByID()
+                        console.log(result.communicationId);
+                        userService.getUserDetailsByProfileId(result.communicationId)
                           .then(function(user){
                               res.send(user);
                           })

@@ -12,6 +12,7 @@ service.authenticate = authenticate;
 //service.getUsersList = getUsersList;
 //service.getById = getById;
 service.create = create;
+service.getUserDetailsByProfileId=getUserDetailsByProfileId;
 //service.update = update;
 //service.delete = _delete;
 
@@ -38,8 +39,7 @@ function authenticate(username, password,callback) {
                             communicationId:user.ft_profileId,
                             exp: Math.floor(new Date().getTime() + 60 * 60 * 24 * 1000)
                             };
-                            let jwt_token = jwt.encode(payload, config.secret);
-                            console.log('inside1')
+                            let jwt_token = jwt.encode(payload, config.secret);                            
                             let result = JSON.stringify({ status: 200, username: user.fullname,token: jwt_token });
                             callback(null, result);                            
                         } else {
@@ -87,16 +87,17 @@ function create(user,callback) {
     });
 }
 
-function getUserByID(emailid,callback){
+function getUserDetailsByProfileId(profileId,callback){
     let db_connect = new db();
+    console.log('profileid'+profileId);
     db_connect.getConnection(function(err , conn){
           if (err)
             callback('Could not connect to database',null);
           if(conn)
             {
                 console.log('getting the user details by id ..');
-                let sqlquery = 'select fullname ,surname , gender ,dob ,maritalstatus ,phone from tbl_members where email = ?';
-                conn.query(sqlquery ,[emailid],function(err,result){
+                let sqlquery = 'select fullname ,surname , gender ,dob ,maritalstatus ,phone from tbl_members where ft_profileId = ?';
+                conn.query(sqlquery ,[profileId],function(err,result){
                     conn.release();
                     if(err)
                         throw err ;

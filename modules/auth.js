@@ -21,9 +21,9 @@ module.exports = class auth{
 		
 			let decoded = jwt.decode(jwtToken, config.development.common.jwtSecret);
 			if (decoded.exp < Date.now()) {
-		    	callback(null,{status:'false',profileId:decoded.profileId});
+		    	callback(null,{status:'false',profileId:decoded.communicationId});
 			} else {	
-				callback(null, {status:'true',profileId:decoded.profileId});
+				callback(null, {status:'true',profileId:decoded.communicationId});
 			}
 		} 
 	};
