@@ -10,6 +10,7 @@ router.post('/authenticate', authenticate);
 router.post('/register', register);
 router.get('/getUsersList', getUsersList);
 router.get('/getUserDetailsByProfileId', getUserDetailsByProfileId);
+router.post('/updateProfileUser' , updateProfileUser);
 
 
 module.exports = router;
@@ -70,15 +71,27 @@ function getUserDetailsByProfileId(req , res){
             }
     }
 
-function updateUser(req, res) {
-    userService.updateUser(req.body,function(err,result) {
-      
-           if (result) {
-                res.send(JSON.stringify({ status: 200, msg: '',result:result }));
-            } else {
-                return res.send(JSON.stringify({ status: 401, msg: 'Error' }));
+function updateProfileUser(req, res) {
+console.log('step1-1');
+     if(req.get('authentication') != null)
+            {
+                return new Promise((resolve , reject) => {
+                    let auth = new Auth();
+                    auth.validateToken(req.get('authentication') , function(err , result){
+                        if(err)
+                            reject(err);
+                        console.log(result);
+                        userService.updateProfileUser(req.body,function(err,user) {
+                            if (user) {
+                                res.send(JSON.stringify({ status: 200, msg: '',result:user }));                                
+                            } else {
+                                return res.send(JSON.stringify({ status: 401, msg: 'Error' }));
+                            }
+                        });
+                    });
+                })
             }
-    });
+    
 }
 
 
