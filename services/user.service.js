@@ -110,7 +110,7 @@ function getUserDetailsByProfileId(profileId,callback){
 }
 
 
-function updateProfileUser(user,callback) {
+function updateProfileUser(user,profileId,callback) {
        let db_connect = new db();
    console.log('step2-1... in api');
     db_connect.getConnection(function (err, conn) {
@@ -119,6 +119,7 @@ function updateProfileUser(user,callback) {
         if(conn)
             {
                console.log('updating user profile chnages in user.service');
+               console.log('profileID'+profileId);
                 let strQuery='UPDATE tbl_members set  fullname = ?, surname =? , gender =? , dob = ?,maritalstatus = ?, phone =? where ft_profileId = ?';
                 conn.query(strQuery,[user.fullname, user.surname, user.gender,user.dob, user.maritalstatus,user.phone,profileId], function(err, result) { 
                     conn.release();
@@ -126,7 +127,8 @@ function updateProfileUser(user,callback) {
                          throw err; 
                      if(result)
                         {
-                            var currentData=JSON.parse(JSON.stringify(result[0]))[0];
+                            console.log(result[0])[0];
+                            var currentData=JSON.stringify(result[0]);
                             console.log(currentData.response);
                             callback(null,currentData.response);                            
                         }

@@ -48,7 +48,7 @@ function register(req, res) {
     });
 }
 
-// getting the user profile details based on emailid
+// getting the user profile details based on id
 function getUserDetailsByProfileId(req , res){
     
         if(req.get('authentication') != null)
@@ -73,25 +73,15 @@ function getUserDetailsByProfileId(req , res){
 
 function updateProfileUser(req, res) {
 console.log('step1-1');
-     if(req.get('authentication') != null)
-            {
-                return new Promise((resolve , reject) => {
-                    let auth = new Auth();
-                    auth.validateToken(req.get('authentication') , function(err , result){
-                        if(err)
-                            reject(err);
-                        console.log(result);
-                        userService.updateProfileUser(req.body,function(err,user) {
-                            if (user) {
-                                res.send(JSON.stringify({ status: 200, msg: '',result:user }));                                
-                            } else {
-                                return res.send(JSON.stringify({ status: 401, msg: 'Error' }));
-                            }
-                        });
-                    });
-                })
+
+        userService.updateProfileUser(req.body,result.communicationId,function(err,user) {
+            if (user) {
+                res.send(JSON.stringify({ status: 200, msg: '',result:user }));                                
+            } else {
+                return res.send(JSON.stringify({ status: 401, msg: 'Error' }));
             }
-    
+        });     
+
 }
 
 
@@ -114,3 +104,5 @@ function getUsersList(req, res) {
             })
         }
 }
+
+  
