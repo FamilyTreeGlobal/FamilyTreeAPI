@@ -74,7 +74,7 @@ function getUserDetailsByProfileId(req , res){
 function updateProfileUser(req, res) {
 console.log('step1-1');
 
-        userService.updateProfileUser(req.body,result.communicationId,function(err,user) {
+        userService.updateProfileUser(req.body,req.communicationId,function(err,user) {
             if (user) {
                 res.send(JSON.stringify({ status: 200, msg: '',result:user }));                                
             } else {
