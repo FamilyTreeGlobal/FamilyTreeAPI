@@ -4,6 +4,7 @@ var express = require('express');
 var router = express.Router();
 var userService = require('services/user.service');
 var Auth=require('../modules/auth');
+var moment = require('moment');
 
 // routes
 router.post('/authenticate', authenticate);
@@ -19,7 +20,7 @@ function authenticate(req, res) {
     console.log(req.body);
     userService.authenticate(req.body.username, req.body.password,function(err,user) {
       //res.send(result);
-     // console.log('test:'+user);
+     console.log('test:'+user);
         if (user!=null) {
                 // authentication successful
                 
@@ -61,6 +62,12 @@ function getUserDetailsByProfileId(req , res){
                         console.log(result);
                         userService.getUserDetailsByProfileId(result.communicationId,function(err,user) {
                             if (user) {
+                               var user=JSON.parse(user);
+                               console.log('data.dob'+user.dob) ;
+                            var stillUtc = moment.utc(user.dob).toDate();
+                            var local = moment(stillUtc).local().format('YYYY-MM-DD');   
+                            user.dob=local;
+                            console.log('data.dob'+user.dob) ;
                                 res.send(JSON.stringify({ status: 200, msg: '',result:user }));                                
                             } else {
                                 return res.send(JSON.stringify({ status: 401, msg: 'Error' }));
@@ -73,7 +80,7 @@ function getUserDetailsByProfileId(req , res){
 
 function updateProfileUser(req, res) {
 console.log('step1-1');
-console.log(req);
+
 console.log(req.get('authentication'));
  if(req.get('authentication') != null)
             {
@@ -83,15 +90,15 @@ console.log(req.get('authentication'));
                         if(err)
                             reject(err);
                         console.log(result);
-        userService.updateProfileUser(req.body,result.communicationId,function(err,user) {
-            if (user) {
-                res.send(JSON.stringify({ status: 200, msg: '',result:user }));                                
-            } else {
-                return res.send(JSON.stringify({ status: 401, msg: 'Error' }));
-                }
-             });     
-         });
-       })
+                        userService.updateProfileUser(req.body,result.communicationId,function(err,user) {
+                            if (user) {
+                                res.send(JSON.stringify({ status: 200, msg: '',result:user }));                                
+                            } else {
+                                return res.send(JSON.stringify({ status: 401, msg: 'Error' }));
+                                }
+                            });     
+                  });
+           })
     }
 }
 
