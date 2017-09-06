@@ -79,28 +79,31 @@ function getUserDetailsByProfileId(req , res){
     }
 
 function updateProfileUser(req, res) {
+    console.log('Body is ....'+req.body);
 console.log('step1-1');
-
-console.log(req.get('authentication'));
- if(req.get('authentication') != null)
-            {
-                return new Promise((resolve , reject) => {
-                    let auth = new Auth();
-                    auth.validateToken(req.get('authentication') , function(err , result){
-                        if(err)
-                            reject(err);
-                        console.log(result);
-                        userService.updateProfileUser(req.body,result.communicationId,function(err,user) {
-                            if (user) {
-                                res.send(JSON.stringify({ status: 200, msg: '',result:user }));                                
-                            } else {
-                                return res.send(JSON.stringify({ status: 401, msg: 'Error' }));
-                                }
-                            });     
-                  });
-           })
-    }
+// console.log(req);
+ //console.log(req.get('authentication'));
+//  if(req.get('authentication') != null)
+//             {
+//                 return new Promise((resolve , reject) => {
+//                     let auth = new Auth();
+//                     auth.validateToken(req.get('authentication') , function(err , result){
+//                         if(err)
+//                             reject(err);
+//                         console.log('result...is....'+result);
+//                         console.log('id is...'+result.communicationId);
+        userService.updateProfileUser(req.body,function(err,user) {
+            if (user) {
+                res.send(JSON.stringify({ status: 200, msg: '',result:user }));                                
+            } else {
+                return res.send(JSON.stringify({ status: 401, msg: 'Error' }));
+                }
+             });     
+    //      });
+    //    })
+    // }
 }
+
 
 
 function getUsersList(req, res) {
